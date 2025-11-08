@@ -1,4 +1,6 @@
 import cadquery as cq
+from ocp_vscode import show, set_port
+
 result = cq.Workplane("XY").box(10000, 7000, 5000)
 
 assembly = cq.Assembly()
@@ -9,5 +11,7 @@ assembly.add(
 )
 
 assembly.export(path="result.glb")
+assembly.export(path="result.vrml")
 
-result
+set_port(3939)
+show(result)
