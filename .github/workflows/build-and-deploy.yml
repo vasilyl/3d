@@ -30,7 +30,7 @@ jobs:
         # Creates a directory named 'public' and moves/copies the files into it.
         run: |
           mkdir public
-          cp result.glb public/result.glb
+          cp result.* public/
           cp index.html public/index.html 
 
       - name: 📦 Upload Pages Artifact
