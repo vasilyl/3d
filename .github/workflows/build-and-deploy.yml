@@ -26,11 +26,18 @@ jobs:
         # This runs your build.py and should produce result.glb
         run: python build.py
 
+      - name: 📁 Prepare Artifact Directory
+        # Creates a directory named 'public' and moves/copies the files into it.
+        run: |
+          mkdir public
+          cp result.glb public/result.glb
+          cp index.html public/index.html 
+
       - name: 📦 Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: result.glb # The path to the file you want to make public.
-
+          # IMPORTANT: Set path to the directory containing all your public files
+          path: public
   deploy:
     environment:
       name: github-pages
