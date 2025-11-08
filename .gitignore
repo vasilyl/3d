@@ -1,3 +1,4 @@
 __pycache__
 cadquery_examples
 venv_*
+*.glb
