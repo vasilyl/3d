@@ -2,7 +2,7 @@ import cadquery as cq
 from ocp_vscode import show, set_port
 import os
 
-result = cq.Workplane("XY").box(10000, 7000, 5000)
+result = cq.Workplane("XY").box(2, 2, 4).faces(">Z").hole(1)
 
 # Detect GitHub CI (or general CI) and disable interactive viewer in that environment
 if os.getenv("GITHUB_ACTIONS", "").lower() == "true" or os.getenv("CI", "").lower() == "true":
