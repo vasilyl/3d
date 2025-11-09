@@ -3,3 +3,4 @@ cadquery_examples
 venv_*
 *.glb
 *.vrml
+.DS_Store
