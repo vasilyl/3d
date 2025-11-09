@@ -44,6 +44,25 @@
     <span id="name"></span>
     <span id="loading"></span>
   </div>
+
+  <div class="center">
+    <button class="button" id="sample-1-button">
+      Sample 1
+    </button>
+    <button class="button" id="sample-2-button">
+      Sample 2
+    </button>
+    <button class="button" id="sample-3-button">
+      Sample 3
+    </button>
+    <button class="button" id="sample-4-button">
+      Sample 4 (.glb)
+    </button>
+    <!--button class="button" id="sample-5-button">
+        Sample 5 (.usdz)
+      </button-->
+  </div>
+
   <div class="center">
     <input class="mr2" id="grid-button" type="checkbox" checked>
     Grid
@@ -57,12 +76,24 @@
   <script>
     var modelPlayer = this.Js3dModelViewer
     var viewerElement = document.getElementById('viewer')
-    var opts = {
+    var scene = modelPlayer.prepareScene(viewerElement, {
       grid: true,
       background: 'rgb(80, 80, 80)'
-    }
-    var scene = modelPlayer.prepareScene(viewerElement, opts)
-    modelPlayer.loadGlb(scene, './result.glb')
+    })
+
+    viewerElement.addEventListener('loading', function (event) {
+      if (event.detail.loaded === 0) {
+        nameElement.innerHTML = 'Loading...'
+      }
+      var progress = Math.floor(100 * event.detail.loaded / event.detail.total)
+      loadingElement.innerHTML = progress + '%'
+    })
+
+
+    modelPlayer.loadObject(scene, 'https://cgwire.github.io/js-3d-model-viewer/assets/sample.obj', null, function () {
+      nameElement.innerHTML = 'Sample 01'
+      loadingElement.innerHTML = ''
+    })
 
     var fullScreenButton = document.getElementById('fullscreen-button')
     fullScreenButton.addEventListener('click', function () {
