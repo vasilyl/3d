@@ -2,11 +2,12 @@
 <html>
 
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/themes/prism.min.css" />
   <style>
     #viewer {
       width: 100%;
-      height: 400px;
+      height: 80vh;
       margin: auto;
       background: #000000;
       margin-top: 2em;
@@ -41,17 +42,14 @@
   <div id="viewer"></div>
 
   <div class="center">
-    <span id="name"></span>
-    <span id="loading"></span>
-  </div>
-
-  <div class="center">
     <input class="mr2" id="grid-button" type="checkbox" checked>
     Grid
     </input>
     <button class="button" id="fullscreen-button">
       Full Screen
     </button>
+    <span id="name"></span>
+    <span id="loading"></span>
   </div>
 
   <script src="https://cgwire.github.io/js-3d-model-viewer/dist/js-3d-model-viewer.js"></script>
@@ -77,7 +75,7 @@
       scene,
       'result.glb',
       function () {
-        nameElement.innerHTML = 'Sample 04'
+        nameElement.innerHTML = 'Loaded'
         loadingElement.innerHTML = ''
       })
 
