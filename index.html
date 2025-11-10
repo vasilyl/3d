@@ -1,16 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/themes/prism.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    #viewer {
-      width: 100%;
-      height: 80vh;
-      margin: auto;
-      background: #000000;
-      margin-top: 2em;
+    .grid-item {
+      width: 50%;
+      padding: 0.5rem;
+      box-sizing: border-box;
+    }
+
+    @media (orientation: portrait) {
+      .grid-item {
+        width: 100%;
+      }
     }
 
     .center {
@@ -21,69 +27,73 @@
     canvas {
       display: block;
     }
-
-    .button {
-      background-color: #4CAF50;
-      border: none;
-      color: white;
-      padding: 10px 24px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 16px;
-      margin: 4px 2px;
-      cursor: pointer;
-      border-radius: 4px;
-    }
   </style>
 </head>
 
-<body>
-  <div id="viewer"></div>
+<body class="bg-gray-50 flex items-center justify-center min-h-screen p-4 font-sans">
+  <div id="grid-container" class="flex flex-wrap w-full max-w-6xl shadow-xl rounded-2xl bg-white p-2">
+    <div class="grid-item">
+      <div
+        class="bg-indigo-600 h-full aspect-square flex items-center justify-center text-white text-3xl font-bold rounded-xl shadow-md transition transform hover:scale-[1.02] duration-300">
+        1
+      </div>
+    </div>
 
-  <div class="center">
-    <input class="mr2" id="grid-button" type="checkbox" checked>
-    Grid
-    </input>
-    <button class="button" id="fullscreen-button">
-      Full Screen
-    </button>
-    <span id="name"></span>
-    <span id="loading"></span>
+    <div class="grid-item">
+      <div
+        class="bg-pink-600 h-full aspect-square flex items-center justify-center text-white text-3xl font-bold rounded-xl shadow-md transition transform hover:scale-[1.02] duration-300">
+        2
+      </div>
+    </div>
+
+    <div class="grid-item">
+      <div
+        class="bg-teal-600 h-full aspect-square flex items-center justify-center text-white text-3xl font-bold rounded-xl shadow-md transition transform hover:scale-[1.02] duration-300">
+        3
+      </div>
+    </div>
+
+    <div class="grid-item">
+      <div id="viewer"
+        class="bg-yellow-600 h-full aspect-square flex items-center justify-center text-white text-3xl font-bold rounded-xl shadow-md transition transform hover:scale-[1.02] duration-300">
+
+      </div>
+    </div>
+
+    <div class="grid-item">
+      <div
+        class="bg-red-600 h-full aspect-square flex items-center justify-center text-white text-3xl font-bold rounded-xl shadow-md transition transform hover:scale-[1.02] duration-300">
+        5
+      </div>
+    </div>
+
+    <div class="grid-item">
+      <div
+        class="bg-blue-600 h-full aspect-square flex items-center justify-center text-white text-3xl font-bold rounded-xl shadow-md transition transform hover:scale-[1.02] duration-300">
+        6
+      </div>
+    </div>
+
   </div>
 
   <script src="https://cgwire.github.io/js-3d-model-viewer/dist/js-3d-model-viewer.js"></script>
   <script>
     var modelPlayer = this.Js3dModelViewer
-    var nameElement = document.getElementById('name')
-    var loadingElement = document.getElementById('loading')
     var viewerElement = document.getElementById('viewer')
     var scene = modelPlayer.prepareScene(viewerElement, {
       grid: true,
       background: 'rgb(80, 80, 80)'
     })
 
-    viewerElement.addEventListener('loading', function (event) {
-      if (event.detail.loaded === 0) {
-        nameElement.innerHTML = 'Loading...'
-      }
-      var progress = Math.floor(100 * event.detail.loaded / event.detail.total)
-      loadingElement.innerHTML = progress + '%'
-    })
-
     modelPlayer.loadGlb(
       scene,
       'result.glb',
-      function () {
-        nameElement.innerHTML = 'Loaded'
-        loadingElement.innerHTML = ''
-      })
+      function () { })
 
-    var fullScreenButton = document.getElementById('fullscreen-button')
-    fullScreenButton.addEventListener('click', function () {
-      modelPlayer.goFullScreen(viewerElement)
-    })  </script>
-
+    viewerElement.addEventListener('dblclick', function () {
+      modelPlayer.goFullScreen(viewerElement);
+    });
+  </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/prism.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/components/prism-javascript.js"></script>
 </body>
