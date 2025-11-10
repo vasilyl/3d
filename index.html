@@ -65,17 +65,19 @@
   </script>
   <script type="module">
     import * as THREE from 'three';
-    import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
+const controls = new OrbitControls( camera, renderer.domElement );
+const loader = new GLTFLoader();
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const loader = new GLTFLoader();
+    const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
 
     loader.load(
       'exports/result.glb',
       function (gltf) {
-        scene.add(gltf.scene);
+        // scene.add(gltf.scene);
       },
       undefined,
       function (error) {
@@ -83,10 +85,20 @@
       }
     );
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    const controls = new OrbitControls(camera, renderer.domElement);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize( 300, 300 );
+     document.getElementById('viewer').appendChild(renderer.domElement);
 
-    document.getElementById('viewer').appendChild(renderer.domElement);
+const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+const cube = new THREE.Mesh( geometry, material );
+scene.add( cube );
+
+camera.position.z = 5;
+    // const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    // const controls = new OrbitControls(camera, renderer.domElement);
+    // camera.position.set(0, 20, 100);
+    // controls.update();
   </script>
 </body>
 
