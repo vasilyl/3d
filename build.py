@@ -31,7 +31,7 @@ if os.getenv("GITHUB_ACTIONS", "").lower() == "true" or os.getenv("CI", "").lowe
     assembly.add(
         result,
         name="Result",
-        # color=cq.Color(0.2, 0.4, 0.6) # Optional: Adds a color
+        color=cq.Color(0.2, 0.4, 0.6) # Optional: Adds a color
     )
 
     assembly.export(path=f"{OUTPUT_DIR}/result.glb")
