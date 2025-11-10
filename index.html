@@ -33,45 +33,25 @@
 <body class="bg-gray-50 flex items-center justify-center min-h-screen p-4 font-sans">
   <div id="grid-container" class="flex flex-wrap w-full max-w-6xl shadow-xl rounded-2xl bg-white p-2">
     <div class="grid-item">
-      <div
-        class="bg-indigo-600 h-full aspect-square flex items-center justify-center text-white text-3xl font-bold rounded-xl shadow-md transition transform hover:scale-[1.02] duration-300">
-        1
+      <div class="h-full aspect-square flex items-center justify-center">
+        <img src="exports/result_front.svg" alt="Front" class="object-contain">
       </div>
     </div>
 
     <div class="grid-item">
-      <div
-        class="bg-pink-600 h-full aspect-square flex items-center justify-center text-white text-3xl font-bold rounded-xl shadow-md transition transform hover:scale-[1.02] duration-300">
-        2
+      <div class="h-full aspect-square flex items-center justify-center">
+        <img src="exports/result_left.svg" alt="Left" class="object-contain">
       </div>
     </div>
 
     <div class="grid-item">
-      <div
-        class="bg-teal-600 h-full aspect-square flex items-center justify-center text-white text-3xl font-bold rounded-xl shadow-md transition transform hover:scale-[1.02] duration-300">
-        3
+      <div class="h-full aspect-square flex items-center justify-center">
+        <img src="exports/result_top.svg" alt="Top" class="object-contain">
       </div>
     </div>
 
     <div class="grid-item">
-      <div id="viewer"
-        class="bg-yellow-600 h-full aspect-square flex items-center justify-center text-white text-3xl font-bold rounded-xl shadow-md transition transform hover:scale-[1.02] duration-300">
-
-      </div>
-    </div>
-
-    <div class="grid-item">
-      <div
-        class="bg-red-600 h-full aspect-square flex items-center justify-center text-white text-3xl font-bold rounded-xl shadow-md transition transform hover:scale-[1.02] duration-300">
-        5
-      </div>
-    </div>
-
-    <div class="grid-item">
-      <div
-        class="bg-blue-600 h-full aspect-square flex items-center justify-center text-white text-3xl font-bold rounded-xl shadow-md transition transform hover:scale-[1.02] duration-300">
-        6
-      </div>
+      <div id="viewer" class="h-full aspect-square flex items-center justify-center"></div>
     </div>
 
   </div>
@@ -87,7 +67,7 @@
 
     modelPlayer.loadGlb(
       scene,
-      'result.glb',
+      'exports/result.glb',
       function () { })
 
     viewerElement.addEventListener('dblclick', function () {
