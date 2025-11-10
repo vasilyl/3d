@@ -4,7 +4,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/themes/prism.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .grid-item {
@@ -56,26 +55,31 @@
 
   </div>
 
-  <script src="https://cgwire.github.io/js-3d-model-viewer/dist/js-3d-model-viewer.js"></script>
   <script>
-    var modelPlayer = this.Js3dModelViewer
-    var viewerElement = document.getElementById('viewer')
-    var scene = modelPlayer.prepareScene(viewerElement, {
-      grid: true,
-      background: 'rgb(80, 80, 80)'
-    })
+    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.module.js';
+    import { OrbitalControls } from 'https://cdn.jsdelivr.net/npm/three@0.150.1/examples/jsm/controls/OrbitControls.js';
+    import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.150.1/examples/jsm/loaders/GLTFLoader.js';
 
-    modelPlayer.loadGlb(
-      scene,
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const loader = new GLTFLoader();
+
+    loader.load(
       'exports/result.glb',
-      function () { })
+      function (gltf) {
+        scene.add(gltf.scene);
+      },
+      undefined,
+      function (error) {
+        console.error(error);
+      }
+    );
 
-    viewerElement.addEventListener('dblclick', function () {
-      modelPlayer.goFullScreen(viewerElement);
-    });
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    const controls = new OrbitalControls(camera, renderer.domElement);
+
+    document.getElementById('viewer').appendChild(renderer.domElement);
   </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/prism.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/components/prism-javascript.js"></script>
 </body>
 
 </html>
