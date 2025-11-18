@@ -1,2 +1,2 @@
-build123d~=0.8.0
+build123d<=0.9.1
 ocp_vscode
