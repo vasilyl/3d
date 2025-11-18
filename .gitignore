@@ -4,3 +4,7 @@ venv_*
 *.glb
 *.vrml
 .DS_Store
+.vscode/
+exports/
+.gitignore
+public/

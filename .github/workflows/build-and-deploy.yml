@@ -29,9 +29,9 @@ jobs:
       - name: 📁 Prepare Artifact Directory
         # Creates a directory named 'public' and moves/copies the files into it.
         run: |
-          mkdir public
-          cp -r exports public/
-          cp index.html public/index.html 
+          mkdir -p public
+          cp *.html public/
+          cp *.js public/ 
 
       - name: 📦 Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3

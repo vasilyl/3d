@@ -1,2 +1,2 @@
-cadquery
+build123d
 ocp_vscode
