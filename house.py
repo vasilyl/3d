@@ -23,7 +23,7 @@ class House(Part):
             3 * M,
             align=(Align.MAX, Align.MAX, Align.MIN),
         )
-        super().__init__(shapes=[house + garage])
+        super().__init__([house + garage])
 
 
 if __name__ == "__main__":

@@ -2,61 +2,24 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+  <meta charset="utf-8">
   <style>
-    .grid-item {
-      width: 50%;
-      padding: 0.5rem;
-      box-sizing: border-box;
-    }
-
-    @media (orientation: portrait) {
-      .grid-item {
-        width: 100%;
-      }
-    }
-
-    .center {
-      text-align: center;
-      margin-top: 2em;
-    }
-
-    canvas {
-      width: 100% !important;
-      height: 100% !important;
+    body {
+      margin: 0;
     }
   </style>
 </head>
 
-<body class="bg-gray-50 flex items-center justify-center min-h-screen p-4 font-sans">
-  <div id="grid-container" class="flex flex-wrap w-full max-w-6xl shadow-xl rounded-2xl bg-white p-2">
-    <div class="grid-item">
-      <div class="h-full aspect-square flex">
-        <img src="exports/result_front.svg" alt="Front" class="object-contain">
-      </div>
-    </div>
-
-    <div class="grid-item">
-      <div class="h-full aspect-square flex">
-        <img src="exports/result_left.svg" alt="Left" class="object-contain">
-      </div>
-    </div>
-
-    <div class="grid-item">
-      <div class="h-full aspect-square flex">
-        <img src="exports/result_top.svg" alt="Top" class="object-contain">
-      </div>
-    </div>
-
-    <div class="grid-item">
-      <model-viewer class="h-full w-full aspect-square flex" alt="" src="exports/result.glb" ar shadow-intensity="1"
-        camera-controls touch-action="pan-y"></model-viewer>
-    </div>
-
-  </div>
+<body>
+  <script type="importmap">
+  {
+      "imports": {
+          "three": "https://threejs.org/build/three.module.js",
+          "three/addons/": "https://threejs.org/examples/jsm/"
+      }
+  }
+</script>
+  <script type="module" src="main.js"></script>
 </body>
 
 </html>
