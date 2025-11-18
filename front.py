@@ -4,7 +4,11 @@ from ocp_vscode import show, set_port
 
 class Front(Part):
     def __init__(self):
-        super().__init__([])
+        super().__init__(
+            [
+                Box(1 * MM, 1 * MM, 1 * MM),
+            ]
+        )
 
 
 if __name__ == "__main__":
