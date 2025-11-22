@@ -64,7 +64,7 @@ def make_2d_drawing(part: Part) -> tuple[ShapeList[Edge], ShapeList[Edge], Compo
         part,
         (50, 0, 0),
         (0, 0, 1),
-        (1 / 4 * page_size.X, 1 / 4 * page_size.Y),
+        (1 / 8 * page_size.X, 1 / 4 * page_size.Y),
     )
     visible.extend(vis)
 
@@ -82,7 +82,7 @@ def make_2d_drawing(part: Part) -> tuple[ShapeList[Edge], ShapeList[Edge], Compo
         part,
         (100, 100, 100),
         (0, 0, 1),
-        (1 / 4 * page_size.X, -1 / 4 * page_size.Y),
+        (1 / 8 * page_size.X, -1 / 8 * page_size.Y),
     )
     visible.extend(iso_v)
     hidden.extend(iso_h)
