@@ -61,15 +61,32 @@ class Back(Part):
             * Rectangle(955 * MM, (780 - 2 * 170) * MM, align=Align.MIN)
         )
 
-        stairs = extrude(plane * sketch, 1700 * MM)
+        stairs = extrude(plane * sketch, 1750 * MM)
 
         plane = Plane(origin=(0, lawn_from), x_dir=(1), z_dir=(0, -1, 0))
         sketch = Pos(1200 * MM) * Rectangle(1075 * MM, 140 * MM, align=Align.MIN) + Pos(
             1200 + 1075 * MM
-        ) * Rectangle(3400 * MM, (140 + 130) * MM, align=Align.MIN)
+        ) * Rectangle(3600 * MM, (140 + 130) * MM, align=Align.MIN)
         stairs += extrude(plane * sketch, lawn_from)
 
         concrete = high_block + small_block + stairs - ret_wall
+
+        side_line = Polyline(
+            [
+                (0, 18400 * MM, 230 * MM),
+                (0, 19000 * MM, 270 * MM),
+                (ret_wall_line @ 1) + Vector(0, 0, -550 * MM),
+                (ret_wall_line @ 1) + Vector(0, -600 * MM, -850 * MM),
+            ],
+            close=True,
+        )
+
+        side = (
+            extrude(
+                Face.make_surface(side_line, energy=2), amount=550 * MM, dir=(0, 0, -1)
+            )
+            - ret_wall
+        )
 
         gravel = (
             Pos(small_block.vertices().sort_by(SortBy.DISTANCE)[0])
@@ -86,20 +103,20 @@ class Back(Part):
                 Face(
                     Polyline(
                         (0, lawn_from),
-                        (5700 * MM, lawn_from),
-                        (6400 * MM, 19000 * MM),
-                        (0, 19000 * MM),
+                        (5900 * MM, lawn_from),
+                        (6650 * MM, 18620 * MM),
+                        (0, 18400 * MM),
                         close=True,
                     )
                 ),
                 230 * MM,
             )
-            # Pos(0, lawn_from) * Box(6000 * MM, 17800 * MM, 230 * MM, align=Align.MIN)
             - ret_wall
             - small_block
             - gravel
             - patio
         )
+
         stairs_tops = (
             concrete.vertices().group_by(Axis.Y)[0].group_by(Axis.Z)[-1].sort_by(Axis.X)
         )
@@ -128,7 +145,6 @@ class Back(Part):
                     Pos(6500 * MM, 100 * MM, 450 * MM),
                 ]
                 * stairs_tops[0],
-                # tangents=[(1, 0, 0), (0, 1, 0)],
             )
             + Polyline(
                 [
@@ -139,18 +155,24 @@ class Back(Part):
                 ]
             )
         )
+        offsets_from_start = [
+            (450 * MM, 11300 * MM, -20 * MM),
+            (340 * MM, 8500 * MM, -20 * MM),
+            (250 * MM, 6500 * MM, -20 * MM),
+            (160 * MM, 4500 * MM, -20 * MM),
+            (80 * MM, 2500 * MM, -30 * MM),
+            (10 * MM, 500 * MM, -100 * MM),
+            (0, 0, -130 * MM),
+        ]
+
         upper_lawn_line = (
             Polyline(
-                [
-                    (6900 * MM, 18500 * MM, 1020 * MM),
-                    ret_wall_short_edge.start_point()
-                    + (450 * MM, 11300 * MM, -20 * MM),
-                    ret_wall_short_edge.start_point() + (340 * MM, 8500 * MM, -20 * MM),
-                    ret_wall_short_edge.start_point() + (250 * MM, 6500 * MM, -20 * MM),
-                    ret_wall_short_edge.start_point() + (160 * MM, 4500 * MM, -20 * MM),
-                    ret_wall_short_edge.start_point() + (80 * MM, 2500 * MM, -30 * MM),
-                    ret_wall_short_edge.start_point() + (10 * MM, 500 * MM, -100 * MM),
-                    ret_wall_short_edge.start_point() + (0, 0, -130 * MM),
+                [lawn_mulch_line @ 1]
+                + [
+                    ret_wall_short_edge.start_point() + off
+                    for off in offsets_from_start
+                ]
+                + [
                     ret_wall_short_edge.end_point()
                     + (0, 0, -ret_wall_cap_height - ret_wall_block_height),
                 ]
@@ -159,24 +181,60 @@ class Back(Part):
                     Pos(0, 0, 0),
                 ]
                 * stairs_tops[-1]
-                + [
-                    Pos(0, 0, -30 * MM),
-                ]
-                * stairs_tops[0]
+                + [lawn_mulch_line @ 0]
             )
             + lawn_mulch_line
         )
 
         upper_lawn_base = Vector(stairs_tops[0].X, 0, 0)
-        surface_points = [
+        lawn_points = [
             (4 * M, 6 * M, 1260 * MM),
             (2 * M, -3 * M, 950 * MM),
             (2 * M, -4 * M, 1080 * MM),
         ]
-        surface_points = [v + upper_lawn_base for v in surface_points]
+        lawn_points = [v + upper_lawn_base for v in lawn_points]
 
-        upper_lawn = Face.make_surface(
-            upper_lawn_line, surface_points=surface_points, energy=2
+        upper_lawn = (
+            extrude(
+                Face.make_surface(
+                    upper_lawn_line, surface_points=lawn_points, energy=2
+                ),
+                2 * M,
+                dir=(0, 0, -1),
+            )
+            - ret_wall
+        )
+
+        mulch_line = lawn_mulch_line + Polyline(
+            lawn_mulch_line @ 1,
+            (6900 * MM, 19230 * MM, 1080 * MM),
+            (12200 * MM, 19400 * MM, 1700 * MM),
+            (13000 * MM, -6730 * MM, 2200 * MM),
+            (9850 * MM, -6800 * MM, 1950 * MM),
+            (3845 * MM, -6870 * MM, 1500 * MM),
+            (-4300 * MM, -7000 * MM, 950 * MM),
+            (-4300 * MM, -6000 * MM, 930 * MM),
+            (-4300 * MM, -4000 * MM, 835 * MM),
+            (-4300 * MM, -2000 * MM, 740 * MM),
+            (-4300 * MM, 0, 700 * MM),
+            (3845 * MM, 0, 700 * MM),
+            (3845 * MM, -2000 * MM, 740 * MM),
+            lawn_mulch_line @ 0,
+        )
+
+        mulch_points = [
+            (1690 * MM, -4000 * MM, 835 * MM),
+            (1690 * MM, -6000 * MM, 990 * MM),
+            (-300 * MM, -6000 * MM, 930 * MM),
+            (-2300 * MM, -6000 * MM, 930 * MM),
+        ]
+        mulch = (
+            extrude(
+                Face.make_surface(mulch_line, energy=2, surface_points=mulch_points),
+                2 * M,
+                dir=(0, 0, -1),
+            )
+            - ret_wall
         )
 
         super().__init__(
@@ -186,9 +244,11 @@ class Back(Part):
                 patio,
                 lower_lawn,
                 ret_wall,
-                -upper_lawn,
+                upper_lawn,
+                mulch,
+                side,
             ]
-            # + [Pos(p) for p in surface_points] * Vertex()
+            # + [Pos(p) for p in mulch_points] * Vertex()
         )
 
 
