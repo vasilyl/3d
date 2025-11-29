@@ -31,7 +31,8 @@ jobs:
         run: |
           mkdir -p public
           cp *.html public/
-          cp *.js public/ 
+          cp *.js public/
+          ls -la public/
 
       - name: 📦 Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
