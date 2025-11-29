@@ -18,7 +18,7 @@ class Front(Part):
         lawn_line = Polyline(
             [
                 Pos(0, 0, 700 * MM) * lawn_corner,
-                Pos(0, -7000 * MM, 1000 * MM) * lawn_corner,
+                (lawn_corner.X, -7000 * MM, 1000 * MM),
                 (-17500 * MM, -7000 * MM, -200 * MM),
                 (-17500 * MM, 6380 * MM, -550 * MM),
                 (-11335 * MM, 6380 * MM, -50 * MM),

@@ -13,7 +13,7 @@ def project_to_2d(
     viewport_origin: VectorLike,
     viewport_up: VectorLike,
     page_origin: VectorLike,
-    scale_factor: float = .005,
+    scale_factor: float = .004,
 ) -> tuple[ShapeList[Edge], ShapeList[Edge]]:
     """project_to_2d
 
