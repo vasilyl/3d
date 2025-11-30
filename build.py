@@ -7,13 +7,17 @@ from all import All
 _IS_BATCH = os.getenv("GITHUB_ACTIONS", "") == "true" or os.getenv("CI", "") == "true"
 _OUTPUT_DIR = "public"
 
+_DRAFT = Draft(
+    line_width=0.1, font_size=3.5, decimal_precision=0, display_units=False
+)
+
 
 def project_to_2d(
     part: Part,
     viewport_origin: VectorLike,
     viewport_up: VectorLike,
     page_origin: VectorLike,
-    scale_factor: float = .004,
+    scale_factor: float = 0.004,
 ) -> tuple[ShapeList[Edge], ShapeList[Edge]]:
     """project_to_2d
 
@@ -48,7 +52,6 @@ def make_2d_drawing(part: Part) -> tuple[ShapeList[Edge], ShapeList[Edge], Compo
     frame = trace(lines=Wire.make_rect(frame_size.X, frame_size.Y))
     page_rect = Wire.make_rect(page_size.X, page_size.Y).move(Pos(X=left_margin / -2))
     page = trace(lines=page_rect, line_width=0.1)
-    border = Compound([frame, page])
     visible, hidden = [], []
     # Front
     vis, _ = project_to_2d(
@@ -76,6 +79,14 @@ def make_2d_drawing(part: Part) -> tuple[ShapeList[Edge], ShapeList[Edge], Compo
         (-1 / 4 * page_size.X, -1 / 4 * page_size.Y),
     )
     visible.extend(vis)
+    bbox = Curve(vis).bounding_box()
+    perimeter = Pos(*bbox.center()) * Rectangle(bbox.size.X, bbox.size.Y)
+    width = ExtensionLine(
+        border=perimeter.edges().sort_by(Axis.X)[-1], offset=1 * CM, draft=_DRAFT
+    )
+    height = ExtensionLine(
+        border=perimeter.edges().sort_by(Axis.Y)[0], offset=1 * CM, draft=_DRAFT
+    )
 
     # Isometric
     iso_v, iso_h = project_to_2d(
@@ -86,6 +97,7 @@ def make_2d_drawing(part: Part) -> tuple[ShapeList[Edge], ShapeList[Edge], Compo
     )
     visible.extend(iso_v)
     hidden.extend(iso_h)
+    border = Compound([frame, page, width, height])
     return visible, hidden, border
 
 
@@ -114,7 +126,7 @@ def save_drawing_as_svg(
     exporter.write(f"{_OUTPUT_DIR}/{name}.svg")
 
 
-def create_html_viewer(filename: str, label: str) -> None:
+def create_html_viewer(filename: str, label: str, links: list[str]) -> None:
     html_content = f"""
     <!DOCTYPE html>
     <html lang="en">
@@ -122,38 +134,27 @@ def create_html_viewer(filename: str, label: str) -> None:
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <title>Drawing Viewer - {label}</title>
-      <style>
-      html, body {{
-        height: 100%;
-        margin: 0;
-      }}
-      img {{
-        display: block;
-        margin: 0 auto;
-        max-width: 100%;
-        height: auto;
-      }}
-      </style>
+      <link rel="stylesheet" href="main.css">
     </head>
     <body>
+        <div id="menu"><a href="all.html"><b>All</b></a> | {' '.join(links)}</div>
     <img src="{filename}.svg" alt="Drawing - {label}"/>
     </body>
     </html>
     """
-    with open(f"{_OUTPUT_DIR}/{filename}.html", "w") as f:
+    with open(f"{_OUTPUT_DIR}/{label}.html", "w") as f:
         f.write(html_content)
 
 
 def generate(part: Part) -> None:
-    part.label = part.label if part.label else part.__class__.__name__
-    filename = part.label.lower().replace(" ", "_")
+    label = part.label if part.label else part.__class__.__name__
+    filename = label.lower().replace(" ", "_")
     visible, hidden, border = make_2d_drawing(part)
     save_drawing_as_svg(filename, visible, hidden, border)
-    create_html_viewer(
-        filename,
-        part.label,
-    )
-    [generate(e) for e in part.children]
+    # result = [generate(e) for e in part.children]
+    # links = [f'<a href="{f}.html">{l}</a>' for f, l in result]
+    # create_html_viewer(filename, label, links)
+    # return filename, label
 
 
 root = All()
