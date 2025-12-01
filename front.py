@@ -34,6 +34,7 @@ class Front(Part):
             amount=1000 * MM,
             dir=(0, 0, -1),
         ) + Pos(-11935 * MM, -715 * MM) * Cylinder(radius=1150 * MM, height=750 * MM)
+        lawn.color="Green"
 
         stairs_top = Pos(-10115 * MM, 6380 * MM, -250 * MM)
         driveway_line = Polyline(
@@ -188,12 +189,18 @@ class Front(Part):
             + stair3
             + stair4
         )
-        
+
         concrete = driveway + stairs
+        
+        lawn.color = "Green"
+        concrete.color = "LightGray"
 
         super().__init__(
-            [lawn, concrete],
-            color=Color("Tan")
+            children=[
+                lawn,
+                concrete,
+            ],
+            label="Front yard",
         )
 
 

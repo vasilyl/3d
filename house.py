@@ -29,6 +29,7 @@ class House(Part):
         super().__init__(
             [BASEMENT + CHIMNEY + garage],
             color=Color("Silver"),
+            label="House"
         )
 
 

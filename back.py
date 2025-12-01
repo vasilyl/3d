@@ -237,8 +237,14 @@ class Back(Part):
             - ret_wall
         )
 
+        concrete.color = "LightGray"
+        lower_lawn.color = upper_lawn.color = patio.color = "Green"
+        mulch.color = side.color = "DimGray"
+        gravel.color = "Gray"
+        ret_wall.color = "SlateGray"
+
         super().__init__(
-            [
+            children=[
                 concrete,
                 gravel,
                 patio,
@@ -248,7 +254,7 @@ class Back(Part):
                 mulch,
                 side,
             ],
-            color=Color("Green"),
+            label="Backyard",
         )
 
 

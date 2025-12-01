@@ -14,6 +14,7 @@ class All(Part):
                 Front(),
                 Back(),
             ],
+            label="All"
         )
 
 
