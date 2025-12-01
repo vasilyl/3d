@@ -142,7 +142,7 @@ def create_html_viewer(filename: str, label: str, links: list[str]) -> None:
     </body>
     </html>
     """
-    with open(f"{_OUTPUT_DIR}/{label}.html", "w") as f:
+    with open(f"{_OUTPUT_DIR}/{filename}.html", "w") as f:
         f.write(html_content)
 
 
