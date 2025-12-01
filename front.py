@@ -192,7 +192,8 @@ class Front(Part):
         concrete = driveway + stairs
 
         super().__init__(
-            [lawn, concrete]
+            [lawn, concrete],
+            color=Color("Tan")
         )
 
 

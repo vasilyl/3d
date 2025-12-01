@@ -247,8 +247,8 @@ class Back(Part):
                 upper_lawn,
                 mulch,
                 side,
-            ]
-            # + [Pos(p) for p in mulch_points] * Vertex()
+            ],
+            color=Color("Green"),
         )
 
 

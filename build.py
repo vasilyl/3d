@@ -159,7 +159,7 @@ def create_html_viewer(
     inner = {
         "3D": f"""
              <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
-             <model-viewer alt="{format} - {label}" ar src="{filename}.glb"></model-viewer>""",
+             <model-viewer alt="{format} - {label}" src="{filename}.glb" camera-controls></model-viewer>""",
         "A3": f"""<img src="{filename}.{suffix}.svg" alt="{format} - {label}"/>""",
     }
     formats = [f'<a href="{filename}.{f.lower()}.html">{f}</a>' for f in _FORMATS]
