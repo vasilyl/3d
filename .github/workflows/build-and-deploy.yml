@@ -22,10 +22,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: 🔨 Run Build Script
-        # This runs your build.py and should produce result.glb
-        run: python build.py
-
       - name: 📁 Prepare Artifact Directory
         # Creates a directory named 'public' and moves/copies the files into it.
         run: |
@@ -33,6 +29,11 @@ jobs:
           cp *.html public/
           cp *.js public/
           cp *.css public/
+
+      - name: 🔨 Run Build Script
+        # This runs your build.py and should produce result.glb
+        run: |
+          python build.py
           ls -la public/
 
       - name: 📦 Upload Pages Artifact
