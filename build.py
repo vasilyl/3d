@@ -7,9 +7,7 @@ from all import All
 _IS_BATCH = os.getenv("GITHUB_ACTIONS", "") == "true" or os.getenv("CI", "") == "true"
 _OUTPUT_DIR = "public"
 
-_DRAFT = Draft(
-    line_width=0.1, font_size=3.5, decimal_precision=0, display_units=False
-)
+_DRAFT = Draft(line_width=0.1, font_size=3.5, decimal_precision=0, display_units=False)
 
 
 def project_to_2d(
@@ -46,12 +44,13 @@ def project_to_2d(
 def make_2d_drawing(part: Part) -> tuple[ShapeList[Edge], ShapeList[Edge], Compound]:
     # Create a standard technical drawing border on A3 paper
     page_size = Vector(420 * MM, 297 * MM)
+    page = trace(lines=Rectangle(page_size.X, page_size.Y), line_width=0.1)
     margin = 5 * MM
     left_margin = 20 * MM
     frame_size = page_size - Vector(left_margin + margin, 2 * margin)
-    frame = trace(lines=Wire.make_rect(frame_size.X, frame_size.Y))
-    page_rect = Wire.make_rect(page_size.X, page_size.Y).move(Pos(X=left_margin / -2))
-    page = trace(lines=page_rect, line_width=0.1)
+    frame = trace(
+        lines=Pos((left_margin - margin) / 2) * Rectangle(frame_size.X, frame_size.Y)
+    )
     visible, hidden = [], []
     # Front
     vis, _ = project_to_2d(
@@ -65,9 +64,9 @@ def make_2d_drawing(part: Part) -> tuple[ShapeList[Edge], ShapeList[Edge], Compo
     # Side
     vis, _ = project_to_2d(
         part,
-        (50, 0, 0),
+        (-50, 0, 0),
         (0, 0, 1),
-        (1 / 8 * page_size.X, 1 / 4 * page_size.Y),
+        (1 / 4 * page_size.X, 1 / 4 * page_size.Y),
     )
     visible.extend(vis)
 
@@ -96,19 +95,24 @@ def make_2d_drawing(part: Part) -> tuple[ShapeList[Edge], ShapeList[Edge], Compo
         (1 / 8 * page_size.X, -1 / 8 * page_size.Y),
     )
     visible.extend(iso_v)
-    hidden.extend(iso_h)
+    # hidden.extend(iso_h)
     border = Compound([frame, page, width, height])
     return visible, hidden, border
 
 
-def save_drawing_as_svg(
+def export_3d(name: str, part: Part):
+    export_gltf(part, f"{_OUTPUT_DIR}/{name}.gltf")
+    export_gltf(part, f"{_OUTPUT_DIR}/{name}.glb", binary=True)
+    export_stl(part, f"{_OUTPUT_DIR}/{name}.stl")
+
+
+def export_2d(
     name: str, visible: ShapeList[Edge], hidden: ShapeList[Edge], border: Compound
 ) -> None:
-    # Initialize the SVG exporter
-    exporter = ExportSVG(unit=Unit.MM)
+    exporter = ExportSVG()
     # Define visible and hidden line layers
     exporter.add_layer(
-        "Visible", fill_color=Export2D.DEFAULT_COLOR_INDEX, line_weight=1
+        "Visible", fill_color=Export2D.DEFAULT_COLOR_INDEX, line_weight=0.5
     )
     exporter.add_layer(
         "Hidden", line_color=Export2D.DEFAULT_COLOR_INDEX, line_type=LineType.HIDDEN
@@ -120,40 +124,76 @@ def save_drawing_as_svg(
     exporter.add_shape(visible, layer="Visible")
     exporter.add_shape(hidden, layer="Hidden")
     exporter.add_shape(border, layer="Dimensions")
-    # exporter.add_shape([d1, d2, d3, d4], layer="Dimensions")
     # Write the file
     os.makedirs(_OUTPUT_DIR, exist_ok=True)
-    exporter.write(f"{_OUTPUT_DIR}/{name}.svg")
+    exporter.write(f"{_OUTPUT_DIR}/{name}.a3.svg")
+
+    exporter = ExportDXF()
+    # Define visible and hidden line layers
+    exporter.add_layer("Visible", line_weight=0.5)
+    exporter.add_layer("Hidden", line_type=LineType.HIDDEN)
+    exporter.add_layer("Dimensions", line_weight=0)
+    # Add the objects to the appropriate layer
+    exporter.add_shape(visible, layer="Visible")
+    exporter.add_shape(hidden, layer="Hidden")
+    exporter.add_shape(border, layer="Dimensions")
+    # Write the file
+    os.makedirs(_OUTPUT_DIR, exist_ok=True)
+    exporter.write(f"{_OUTPUT_DIR}/{name}.a3.dxf")
 
 
-def create_html_viewer(filename: str, label: str, links: list[str]) -> None:
+_FORMATS = [
+    "3D",
+    "A3",
+    # "Top",
+    # "Iso",
+    # "Front",
+    # "Left",
+]
+
+
+def create_html_viewer(
+    format: str, filename: str, label: str, parents: list[str], links: list[str]
+) -> None:
+    suffix = format.lower()
+    inner = {
+        "3D": f"""
+             <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+             <model-viewer alt="{format} - {label}" ar src="{filename}.glb"></model-viewer>""",
+        "A3": f"""<img src="{filename}.{suffix}.svg" alt="{format} - {label}"/>""",
+    }
+    formats = [f'<a href="{filename}.{f.lower()}.html">{f}</a>' for f in _FORMATS]
     html_content = f"""
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width,initial-scale=1">
-      <title>Drawing Viewer - {label}</title>
-      <link rel="stylesheet" href="main.css">
-    </head>
-    <body>
-        <div id="menu"><a href="all.html"><b>All</b></a> | {' '.join(links)}</div>
-    <img src="{filename}.svg" alt="Drawing - {label}"/>
-    </body>
-    </html>
-    """
-    with open(f"{_OUTPUT_DIR}/{filename}.html", "w") as f:
-        f.write(html_content)
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>{format} Viewer - {label}</title>
+        <link rel="stylesheet" href="main.css">
+        </head>
+        <body>
+            <div id="menu">{''.join([f'<a href="{f}.{suffix}.html">{l}</a> / ' for l, f in parents])}<b>{label}</b>
+            | {' '.join(links)}
+            ({', '.join(formats)}, <a href="{filename}.stl">STL</a>, <a href="{filename}.{suffix}.dxf">DXF</a>)</div>
+        {inner[format]}
+        </body>
+        </html>
+        """
+    with open(f"{_OUTPUT_DIR}/{filename}.{suffix}.html", "w") as suffix:
+        suffix.write(html_content)
 
 
-def generate(part: Part) -> None:
+def generate(part: Part, parents: list[str] = []) -> None:
     label = part.label if part.label else part.__class__.__name__
     filename = label.lower().replace(" ", "_")
     visible, hidden, border = make_2d_drawing(part)
-    save_drawing_as_svg(filename, visible, hidden, border)
-    result = [generate(e) for e in part.children]
-    links = [f'<a href="{f}.html">{l}</a>' for f, l in result]
-    create_html_viewer(filename, label, links)
+    export_2d(filename, visible, hidden, border)
+    export_3d(filename, part)
+    result = [generate(e, parents + [(label, filename)]) for e in part.children]
+    for format in _FORMATS:
+        links = [f'<a href="{f}.{format.lower()}.html">{l}</a>' for f, l in result]
+        create_html_viewer(format, filename, label, parents, links)
     return filename, label
 
 
