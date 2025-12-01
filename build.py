@@ -151,10 +151,10 @@ def generate(part: Part) -> None:
     filename = label.lower().replace(" ", "_")
     visible, hidden, border = make_2d_drawing(part)
     save_drawing_as_svg(filename, visible, hidden, border)
-    # result = [generate(e) for e in part.children]
-    # links = [f'<a href="{f}.html">{l}</a>' for f, l in result]
-    # create_html_viewer(filename, label, links)
-    # return filename, label
+    result = [generate(e) for e in part.children]
+    links = [f'<a href="{f}.html">{l}</a>' for f, l in result]
+    create_html_viewer(filename, label, links)
+    return filename, label
 
 
 root = All()
