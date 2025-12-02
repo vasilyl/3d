@@ -33,8 +33,11 @@ class Front(Part):
             Face.make_surface(lawn_line, energy=2),
             amount=1000 * MM,
             dir=(0, 0, -1),
-        ) + Pos(-11935 * MM, -715 * MM) * Cylinder(radius=1150 * MM, height=750 * MM)
-        lawn.color="Green"
+        )
+
+        cylinder = Pos(-11935 * MM, -715 * MM) * Cylinder(
+            radius=1150 * MM, height=750 * MM
+        )
 
         stairs_top = Pos(-10115 * MM, 6380 * MM, -250 * MM)
         driveway_line = Polyline(
@@ -191,15 +194,13 @@ class Front(Part):
         )
 
         concrete = driveway + stairs
-        
-        lawn.color = "Green"
+
         concrete.color = "LightGray"
+        cylinder.color = "Gray"
+        lawn.color = "Green"
 
         super().__init__(
-            children=[
-                lawn,
-                concrete,
-            ],
+            children=[lawn, concrete, cylinder],
             label="Front yard",
         )
 

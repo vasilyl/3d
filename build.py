@@ -9,13 +9,14 @@ _OUTPUT_DIR = "public"
 
 _DRAFT = Draft(line_width=0.1, font_size=3.5, decimal_precision=0, display_units=False)
 
+_SCALE = 250
+
 
 def project_to_2d(
     part: Part,
     viewport_origin: VectorLike,
     viewport_up: VectorLike,
     page_origin: VectorLike,
-    scale_factor: float = 0.004,
 ) -> tuple[ShapeList[Edge], ShapeList[Edge]]:
     """project_to_2d
 
@@ -26,12 +27,11 @@ def project_to_2d(
         viewport_origin (VectorLike): location of viewport
         viewport_up (VectorLike): direction of the viewport Y axis
         page_origin (VectorLike): center of 2d object on page
-        scale_factor (float, optional): part scalar. Defaults to 1.0.
 
     Returns:
         tuple[ShapeList[Edge], ShapeList[Edge]]: visible & hidden edges
     """
-    scaled_part = part if scale_factor == 1.0 else scale(part, scale_factor)
+    scaled_part = part if _SCALE == 1.0 else scale(part, 1 / _SCALE)
     visible, hidden = scaled_part.project_to_viewport(
         viewport_origin, viewport_up, look_at=(0, 0, 0)
     )
@@ -80,11 +80,13 @@ def make_2d_drawing(part: Part) -> tuple[ShapeList[Edge], ShapeList[Edge], Compo
     visible.extend(vis)
     bbox = Curve(vis).bounding_box()
     perimeter = Pos(*bbox.center()) * Rectangle(bbox.size.X, bbox.size.Y)
-    width = ExtensionLine(
-        border=perimeter.edges().sort_by(Axis.X)[-1], offset=1 * CM, draft=_DRAFT
+    by_x = perimeter.edges().sort_by(Axis.X)[-1]
+    x_size = ExtensionLine(
+        border=by_x, label=f"{by_x.length * _SCALE:.0f}", offset=1 * CM, draft=_DRAFT
     )
-    height = ExtensionLine(
-        border=perimeter.edges().sort_by(Axis.Y)[0], offset=1 * CM, draft=_DRAFT
+    by_y = perimeter.edges().sort_by(Axis.Y)[0]
+    y_size = ExtensionLine(
+        border=by_y, label=f"{by_y.length * _SCALE:.0f}", offset=1 * CM, draft=_DRAFT
     )
 
     # Isometric
@@ -96,7 +98,7 @@ def make_2d_drawing(part: Part) -> tuple[ShapeList[Edge], ShapeList[Edge], Compo
     )
     visible.extend(iso_v)
     # hidden.extend(iso_h)
-    border = Compound([frame, page, width, height])
+    border = Compound([frame, page, x_size, y_size])
     return visible, hidden, border
 
 
@@ -139,7 +141,7 @@ def export_2d(
     exporter.add_shape(border, layer="Dimensions")
     # Write the file
     os.makedirs(_OUTPUT_DIR, exist_ok=True)
-    exporter.write(f"{_OUTPUT_DIR}/{name}.a3.dxf")
+    exporter.write(f"{_OUTPUT_DIR}/{name}.dxf")
 
 
 _FORMATS = [
@@ -159,7 +161,8 @@ def create_html_viewer(
     inner = {
         "3D": f"""
              <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
-             <model-viewer alt="{format} - {label}" src="{filename}.glb" camera-controls></model-viewer>""",
+             <model-viewer alt="{format} - {label}" src="{filename}.glb" camera-controls shadow-intensity="1"
+        environment-image="https://modelviewer.dev/shared-assets/environments/spruit_sunrise_1k_HDR.jpg"></model-viewer>""",
         "A3": f"""<img src="{filename}.{suffix}.svg" alt="{format} - {label}"/>""",
     }
     formats = [f'<a href="{filename}.{f.lower()}.html">{f}</a>' for f in _FORMATS]
@@ -175,7 +178,7 @@ def create_html_viewer(
         <body>
             <div id="menu">{''.join([f'<a href="{f}.{suffix}.html">{l}</a> / ' for l, f in parents])}<b>{label}</b>
             | {' '.join(links)}
-            ({', '.join(formats)}, <a href="{filename}.stl">STL</a>, <a href="{filename}.{suffix}.dxf">DXF</a>)</div>
+            ({', '.join(formats)}, <a href="{filename}.stl">STL</a>, <a href="{filename}.dxf">DXF</a>)</div>
         {inner[format]}
         </body>
         </html>

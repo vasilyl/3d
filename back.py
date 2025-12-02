@@ -69,7 +69,6 @@ class Back(Part):
         ) * Rectangle(3600 * MM, (140 + 130) * MM, align=Align.MIN)
         stairs += extrude(plane * sketch, lawn_from)
 
-        concrete = high_block + small_block + stairs - ret_wall
 
         side_line = Polyline(
             [
@@ -98,6 +97,8 @@ class Back(Part):
             gravel.vertices().group_by(Axis.Y)[-1].sort_by(SortBy.DISTANCE)[0]
         ) * Box(gravel.bounding_box().size.X, 3660 * MM, 350 * MM, align=Align.MIN)
 
+        concrete = high_block + small_block + patio + stairs - ret_wall
+        
         lower_lawn = (
             extrude(
                 Face(
@@ -239,15 +240,13 @@ class Back(Part):
 
         concrete.color = "LightGray"
         lower_lawn.color = upper_lawn.color = patio.color = "Green"
-        mulch.color = side.color = "DimGray"
-        gravel.color = "Gray"
-        ret_wall.color = "SlateGray"
+        mulch.color = side.color = "Brown"
+        gravel.color = ret_wall.color = "Gray"
 
         super().__init__(
             children=[
                 concrete,
                 gravel,
-                patio,
                 lower_lawn,
                 ret_wall,
                 upper_lawn,

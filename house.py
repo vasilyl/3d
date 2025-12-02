@@ -5,6 +5,7 @@ BASEMENT = Box(7055 * MM, 14100 * MM, 6 * M, align=(Align.MAX, Align.MIN, Align.
 CHIMNEY = Pos(-14 * FT) * Box(
     6 * FT, 2 * FT, 7 * M, align=(Align.MAX, Align.MAX, Align.MIN)
 )
+CHIMNEY.color = "Brown"
 
 
 class House(Part):
@@ -13,12 +14,6 @@ class House(Part):
         basement_width = 7055 * MM
         garage_length = 6090 * MM
         garage_width = 3060 * MM
-        house = Box(
-            basement_width,
-            basement_length,
-            6 * M,
-            align=(Align.MAX, Align.MIN, Align.MIN),
-        )
 
         garage = Pos(-basement_width, basement_length) * Box(
             garage_width,
@@ -26,10 +21,14 @@ class House(Part):
             3 * M,
             align=(Align.MAX, Align.MAX, Align.MIN),
         )
+        house = BASEMENT + garage
+        house.color = "White"
         super().__init__(
-            [BASEMENT + CHIMNEY + garage],
-            color=Color("Silver"),
-            label="House"
+            children=[
+                house,
+                CHIMNEY,
+            ],
+            label="House",
         )
 
 
