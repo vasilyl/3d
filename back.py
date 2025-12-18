@@ -1,7 +1,9 @@
 from build123d import *
 from ocp_vscode import *
+from functools import reduce
 
 from face import Face
+import house
 
 
 class Back(Part):
@@ -69,7 +71,6 @@ class Back(Part):
         ) * Rectangle(3600 * MM, (140 + 130) * MM, align=Align.MIN)
         stairs += extrude(plane * sketch, lawn_from)
 
-
         side_line = Polyline(
             [
                 (0, 18400 * MM, 230 * MM),
@@ -98,7 +99,7 @@ class Back(Part):
         ) * Box(gravel.bounding_box().size.X, 3660 * MM, 350 * MM, align=Align.MIN)
 
         concrete = high_block + small_block + patio + stairs - ret_wall
-        
+
         lower_lawn = (
             extrude(
                 Face(
@@ -238,10 +239,53 @@ class Back(Part):
             - ret_wall
         )
 
+        tsuga = Pos(12000 * MM, -6150 * MM, 2 * M) * Cylinder(
+            radius=300 * MM,
+            height=20 * M,
+            align=(Align.CENTER, Align.CENTER, Align.MIN),
+        )
+        tsuga.label = "Tsuga"
+        camelia = Pos(3700 * MM, -6300 * MM) * Cylinder(
+            radius=200 * MM, height=8 * M, align=(Align.CENTER, Align.CENTER, Align.MIN)
+        )
+        camelia.label = "Camelia"
+        plum = Pos(
+            8650 * MM, house.BASEMENT.vertices().sort_by(Axis.Y)[-1].Y + 800 * MM
+        ) * Cylinder(
+            radius=60 * MM, height=6 * M, align=(Align.CENTER, Align.CENTER, Align.MIN)
+        )
+        plum.label = "Plum"
+
+        tree = Pos(
+            12400 * MM,
+            1500 * MM,
+        ) * Cylinder(
+            radius=100 * MM, height=2 * M, align=(Align.CENTER, Align.CENTER, Align.MIN)
+        )
+        tree.label = "Tree"
+
+        thuja = Cone(
+            bottom_radius=750 * MM,
+            top_radius=0 * MM,
+            height=5 * M,
+            align=(Align.CENTER, Align.CENTER, Align.MIN),
+        )
+        thujas = reduce(
+            lambda a, b: a + b,
+            (
+                Pos(12 * M, y, 1500 * MM) * thuja
+                for y in (7000 * MM, 8200 * MM, 9400 * MM, 10600 * MM)
+            ),
+        )
+        thujas.label = "Thujas"
+
         concrete.color = "LightGray"
         lower_lawn.color = upper_lawn.color = patio.color = "Green"
-        mulch.color = side.color = "Brown"
+        mulch.color = side.color = "SaddleBrown"
         gravel.color = ret_wall.color = "Gray"
+        tsuga.color = camelia.color = plum.color = tree.color = thujas.color = (
+            "DarkGreen"
+        )
 
         super().__init__(
             children=[
@@ -252,6 +296,11 @@ class Back(Part):
                 upper_lawn,
                 mulch,
                 side,
+                tsuga,
+                camelia,
+                plum,
+                tree,
+                thujas,
             ],
             label="Backyard",
         )
@@ -260,4 +309,4 @@ class Back(Part):
 if __name__ == "__main__":
     set_port(3939)
     root = Back()
-    show(*root, names=[root.__class__.__name__], reset_camera=Camera.KEEP)
+    show(*root, names=[f':{c.label}' for c in root.children], reset_camera=Camera.KEEP)

@@ -35,8 +35,13 @@ class Front(Part):
             dir=(0, 0, -1),
         )
 
-        cylinder = Pos(-11935 * MM, -715 * MM) * Cylinder(
-            radius=1150 * MM, height=750 * MM
+        maple = Pos(-11935 * MM, -715 * MM, 700 * MM) * (
+            Cylinder(radius=1150 * MM, height=750 * MM)
+            + Cylinder(
+                radius=100 * MM,
+                height=2 * M,
+                align=(Align.CENTER, Align.CENTER, Align.MIN),
+            )
         )
 
         stairs_top = Pos(-10115 * MM, 6380 * MM, -250 * MM)
@@ -193,14 +198,39 @@ class Front(Part):
             + stair4
         )
 
+        douglas_fir = (
+            Pos(-3 * FT, -7500 * MM, 500 * MM)
+            * Pos(chimney_corner)
+            * Cylinder(
+                radius=500 * MM,
+                height=15 * M,
+                align=(Align.CENTER, Align.CENTER, Align.MIN),
+            )
+        )
+
+        buxus = Pos(
+            -13330 * MM,
+            4800 * MM,
+        ) * Sphere(radius=400 * MM, align=(Align.CENTER, Align.CENTER, Align.MIN))
+        buxus.color = "DarkGreen"
+        buxus.label = "Buxus"
+
         concrete = driveway + stairs
 
         concrete.color = "LightGray"
-        cylinder.color = "Gray"
+        maple.color = douglas_fir.color = "Gray"
+        maple.label = "Maple"
+        douglas_fir.label = "Douglas Fir"
         lawn.color = "Green"
 
         super().__init__(
-            children=[lawn, concrete, cylinder],
+            children=[
+                lawn,
+                concrete,
+                maple,
+                douglas_fir,
+                buxus,
+            ],
             label="Front yard",
         )
 
@@ -209,4 +239,4 @@ if __name__ == "__main__":
     set_port(3939)
     root = Front()
 
-    show(*root, names=[root.__class__.__name__], reset_camera=Camera.KEEP)
+    show(*root, names=[f':{c.label}' for c in root.children], reset_camera=Camera.KEEP)

@@ -35,4 +35,4 @@ class House(Part):
 if __name__ == "__main__":
     set_port(3939)
     root = House()
-    show(*root, names=[root.__class__.__name__], reset_camera=Camera.KEEP)
+    show(*root, names=[f':{c.label}' for c in root.children], reset_camera=Camera.KEEP)

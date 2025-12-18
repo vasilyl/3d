@@ -14,15 +14,11 @@ class All(Part):
                 Front(),
                 Back(),
             ],
-            label="All"
+            label="All",
         )
 
 
 if __name__ == "__main__":
     set_port(3939)
     root = All()
-    show(
-        *root,
-        names=[child.__class__.__name__ for child in root.children],
-        reset_camera=Camera.KEEP
-    )
+    show(*root, names=[f':{c.label}' for c in root.children], reset_camera=Camera.KEEP)

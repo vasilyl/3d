@@ -1,5 +1,5 @@
 from build123d import *
-from ocp_vscode import show, set_port
+from ocp_vscode import *
 import os
 
 from all import All
@@ -92,7 +92,7 @@ def make_2d_drawing(part: Part) -> tuple[ShapeList[Edge], ShapeList[Edge], Compo
     # Isometric
     iso_v, iso_h = project_to_2d(
         part,
-        (100, 100, 100),
+        (-100, -100, 100),
         (0, 0, 1),
         (1 / 8 * page_size.X, -1 / 8 * page_size.Y),
     )
@@ -190,7 +190,7 @@ def create_html_viewer(
 def generate(part: Part, parents: list[str] = []) -> None:
     label = part.label
     filename = part.__class__.__name__.lower().replace(" ", "_")
-    if label:
+    if os.path.exists(f"{filename}.py"):
         visible, hidden, border = make_2d_drawing(part)
         export_2d(filename, visible, hidden, border)
         export_3d(filename, part)
@@ -210,4 +210,4 @@ generate(root)
 
 if not _IS_BATCH:
     set_port(3939)
-    show(*root)
+    show(*root, names=[f':{c.label}' for c in root.children], reset_camera=Camera.KEEP)
