@@ -250,7 +250,7 @@ class Back(Part):
         )
         camelia.label = "Camelia"
         plum = Pos(
-            8650 * MM, house.BASEMENT.vertices().sort_by(Axis.Y)[-1].Y + 800 * MM
+            8650 * MM, house.BASEMENT.vertices().sort_by(Axis.Y)[-1].Y + 800 * MM, 1000 * MM
         ) * Cylinder(
             radius=60 * MM, height=6 * M, align=(Align.CENTER, Align.CENTER, Align.MIN)
         )
@@ -259,6 +259,7 @@ class Back(Part):
         tree = Pos(
             12400 * MM,
             1500 * MM,
+            1800 * MM,
         ) * Cylinder(
             radius=100 * MM, height=2 * M, align=(Align.CENTER, Align.CENTER, Align.MIN)
         )
@@ -273,7 +274,7 @@ class Back(Part):
         thujas = reduce(
             lambda a, b: a + b,
             (
-                Pos(12 * M, y, 1500 * MM) * thuja
+                Pos(12 * M, y, 1700 * MM) * thuja
                 for y in (7000 * MM, 8200 * MM, 9400 * MM, 10600 * MM)
             ),
         )
