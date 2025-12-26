@@ -241,7 +241,7 @@ class Back(Part):
 
         tsuga = Pos(12000 * MM, -6150 * MM, 2 * M) * Cylinder(
             radius=300 * MM,
-            height=20 * M,
+            height=15 * M,
             align=(Align.CENTER, Align.CENTER, Align.MIN),
         )
         tsuga.label = "Tsuga"
