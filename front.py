@@ -199,7 +199,7 @@ class Front(Part):
         )
 
         douglas_fir = (
-            Pos(-3 * FT, -6500 * MM, 500 * MM)
+            Pos(-3 * FT, -4500 * MM, 500 * MM)
             * Pos(chimney_corner)
             * Cylinder(
                 radius=500 * MM,
