@@ -35,8 +35,12 @@ class Front(Part):
             dir=(0, 0, -1),
         )
 
-        maple = Pos(-11935 * MM, -715 * MM, 700 * MM) * (
-            Cylinder(radius=1150 * MM, height=750 * MM)
+        maple = Pos(-11935 * MM, -715 * MM, 360 * MM) * (
+            Cylinder(
+                radius=1150 * MM,
+                height=750 * MM,
+                align=(Align.CENTER, Align.CENTER, Align.MAX),
+            )
             + Cylinder(
                 radius=100 * MM,
                 height=2 * M,
@@ -239,4 +243,4 @@ if __name__ == "__main__":
     set_port(3939)
     root = Front()
 
-    show(*root, names=[f':{c.label}' for c in root.children], reset_camera=Camera.KEEP)
+    show(*root, names=[f":{c.label}" for c in root.children], reset_camera=Camera.KEEP)
