@@ -190,18 +190,17 @@ def create_html_viewer(
 def generate(part: Part, parents: list[str] = []) -> None:
     label = part.label
     filename = part.__class__.__name__.lower().replace(" ", "_")
-    if os.path.exists(f"{filename}.py"):
-        visible, hidden, border = make_2d_drawing(part)
-        export_2d(filename, visible, hidden, border)
-        export_3d(filename, part)
-        result = [
-            generate(e, parents + [(label, filename)])
-            for e in part.children
-            if e.label is not None
-        ]
-        for format in _FORMATS:
-            links = [f'<a href="{f}.{format.lower()}.html">{l}</a>' for f, l in result]
-            create_html_viewer(format, filename, label, parents, links)
+    visible, hidden, border = make_2d_drawing(part)
+    export_2d(filename, visible, hidden, border)
+    export_3d(filename, part)
+    result = [
+        generate(e, parents + [(label, filename)])
+        for e in part.children
+        if os.path.exists(f"{e.__class__.__name__.lower().replace(' ', '_')}.py")
+    ]
+    for format in _FORMATS:
+        links = [f'<a href="{f}.{format.lower()}.html">{l}</a>' for f, l in result]
+        create_html_viewer(format, filename, label, parents, links)
     return filename, label
 
 
